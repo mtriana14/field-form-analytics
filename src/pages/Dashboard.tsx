@@ -9,11 +9,13 @@ import {
   Target,
   ArrowUpRight,
   ArrowDownRight,
-  ExternalLink
+  ExternalLink,
+  Upload
 } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { ChartContainer } from "@/components/dashboard/ChartContainer";
+import { Button } from "@/components/ui/button";
 import { chartOptions } from "@/lib/chartConfig";
 import { 
   mockCompanyData, 
@@ -27,6 +29,19 @@ export default function Dashboard() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
+        {/* Header with Upload Button */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-foreground">Dashboard Overview</h2>
+            <p className="text-muted-foreground">Monitor your delivery operations performance</p>
+          </div>
+          <Link to="/upload">
+            <Button className="flex items-center space-x-2">
+              <Upload className="h-4 w-4" />
+              <span>Upload Files</span>
+            </Button>
+          </Link>
+        </div>
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatsCard

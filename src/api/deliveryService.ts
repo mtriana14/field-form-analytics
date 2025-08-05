@@ -98,6 +98,110 @@ class DeliveryApiService {
   async getWeeklySummary(company: string) {
     return this.fetchWithErrorHandling(`/weekly-summary/${company}`);
   }
+
+  // File Upload endpoints
+  async uploadScheduleFile(file: File, onProgress?: (progress: number) => void): Promise<UploadResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable && onProgress) {
+          const progress = (event.loaded / event.total) * 100;
+          onProgress(progress);
+        }
+      };
+      
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          resolve(JSON.parse(xhr.responseText));
+        } else {
+          reject(new Error(`Upload failed: ${xhr.statusText}`));
+        }
+      };
+      
+      xhr.onerror = () => reject(new Error('Upload failed'));
+      
+      xhr.open('POST', `${API_BASE_URL}/api/upload-schedule`);
+      xhr.send(formData);
+    });
+  }
+
+  async validateFile(file: File): Promise<FileValidationResult> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await fetch(`${API_BASE_URL}/api/validate-file`, {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Validation failed: ${response.statusText}`);
+    }
+    
+    return response.json();
+  }
+
+  async getUploadStatus(uploadId: string): Promise<UploadStatus> {
+    return this.fetchWithErrorHandling<UploadStatus>(`/upload-status/${uploadId}`);
+  }
+
+  async getUploadHistory(): Promise<UploadHistoryItem[]> {
+    return this.fetchWithErrorHandling<UploadHistoryItem[]>('/upload-history');
+  }
+
+  async downloadTemplate(templateType: string = 'schedule'): Promise<Blob> {
+    const response = await fetch(`${API_BASE_URL}/api/download-template/${templateType}`);
+    
+    if (!response.ok) {
+      throw new Error(`Template download failed: ${response.statusText}`);
+    }
+    
+    return response.blob();
+  }
+}
+
+// File Upload Types
+export interface UploadResponse {
+  success: boolean;
+  uploadId: string;
+  message: string;
+  processedRecords?: number;
+  errors?: string[];
+}
+
+export interface FileValidationResult {
+  valid: boolean;
+  errors: string[];
+  warnings: string[];
+  preview?: {
+    headers: string[];
+    rows: any[][];
+    totalRows: number;
+  };
+}
+
+export interface UploadStatus {
+  id: string;
+  fileName: string;
+  status: 'pending' | 'uploading' | 'processing' | 'completed' | 'error';
+  progress: number;
+  uploadedAt: string;
+  processedRecords?: number;
+  errors?: string[];
+}
+
+export interface UploadHistoryItem {
+  id: string;
+  fileName: string;
+  uploadDate: string;
+  status: 'completed' | 'failed' | 'processing';
+  processedRecords: number;
+  fileSize: number;
+  errors?: string[];
 }
 
 export const deliveryApi = new DeliveryApiService();
@@ -149,3 +253,6 @@ export const useWeeklyTrends = () =>
 
 export const useOperationsSummary = () => 
   useApiData(() => deliveryApi.getOperationsSummary());
+
+export const useUploadHistory = () => 
+  useApiData(() => deliveryApi.getUploadHistory());
