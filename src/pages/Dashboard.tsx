@@ -33,33 +33,29 @@ export default function Dashboard() {
             title="Total Stores"
             value={mockCompanyData.totalStores}
             icon={Building2}
-            subtitle="Active locations"
+            description="Active retail locations"
           />
           <StatsCard
             title="Total Employees"
             value={mockCompanyData.totalEmployees}
             icon={Users}
-            subtitle="Active workers"
+            description="Active field workers"
           />
           <StatsCard
             title="Cases This Week"
             value={mockCompanyData.avgCasesPerWeek}
             icon={Package}
-            trend={{
-              value: mockCompanyData.weekOverWeekGrowth,
-              label: "vs last week",
-              isPositive: true
-            }}
+            change={`+${mockCompanyData.weekOverWeekGrowth}% vs last week`}
+            changeType="positive"
+            description="Cases completed"
           />
           <StatsCard
-            title="Avg Efficiency"
+            title="Overall Efficiency"
             value={`${mockCompanyData.employeeEfficiency}%`}
             icon={Target}
-            trend={{
-              value: 2.3,
-              label: "vs last month",
-              isPositive: true
-            }}
+            change="+2.3% vs last month"
+            changeType="positive"
+            description="Across all stores"
           />
         </div>
 

@@ -43,41 +43,72 @@ export const chartColors = {
 export const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
+  interaction: {
+    mode: 'index' as const,
+    intersect: false,
+  },
+  hover: {
+    mode: 'index' as const,
+    intersect: false,
+    animationDuration: 200,
+  },
+  animation: {
+    duration: 1000,
+    easing: 'easeInOutQuart' as const,
+  },
   plugins: {
     legend: {
       display: true,
       position: 'top' as const,
       labels: {
         usePointStyle: true,
-        padding: 24,
+        padding: 20,
         color: chartColors.foreground,
         font: {
-          size: 13,
-          weight: 'normal' as const,
+          size: 12,
+          weight: 500,
+          family: 'Inter, sans-serif',
         },
       },
     },
     tooltip: {
-      backgroundColor: 'rgba(15, 23, 42, 0.95)',
+      backgroundColor: 'rgba(15, 23, 42, 0.98)',
       titleColor: chartColors.foreground,
-      bodyColor: '#94A3B8',
-      borderColor: '#334155',
+      bodyColor: '#CBD5E1',
+      borderColor: chartColors.primary,
       borderWidth: 1,
-      cornerRadius: 8,
+      cornerRadius: 12,
       displayColors: true,
-      padding: 12,
+      padding: 16,
       titleFont: {
         size: 14,
-        weight: 'bold' as const,
+        weight: 600,
+        family: 'Inter, sans-serif',
       },
       bodyFont: {
         size: 13,
+        family: 'Inter, sans-serif',
+      },
+      filter: function(tooltipItem: any) {
+        return tooltipItem.datasetIndex !== undefined;
       },
       callbacks: {
+        title: function(context: any) {
+          return context[0].label || '';
+        },
+        label: function(context: any) {
+          let label = context.dataset.label || '';
+          if (label) {
+            label += ': ';
+          }
+          label += new Intl.NumberFormat().format(context.parsed.y);
+          return label;
+        },
         labelColor: function(context: any) {
           return {
             borderColor: context.dataset.borderColor,
             backgroundColor: context.dataset.backgroundColor,
+            borderWidth: 2,
           };
         },
       },
@@ -87,34 +118,58 @@ export const chartOptions = {
     x: {
       grid: {
         display: false,
-        color: '#334155',
+        color: 'rgba(51, 65, 85, 0.3)',
       },
       ticks: {
         color: '#94A3B8',
         font: {
-          size: 12,
-          weight: 'normal' as const,
+          size: 11,
+          weight: 400,
+          family: 'Inter, sans-serif',
         },
+        maxTicksLimit: 8,
       },
       border: {
         color: '#334155',
+        width: 1,
       },
     },
     y: {
       grid: {
-        color: '#1E293B',
+        color: 'rgba(30, 41, 59, 0.6)',
         lineWidth: 1,
       },
       ticks: {
         color: '#94A3B8',
         font: {
-          size: 12,
-          weight: 'normal' as const,
+          size: 11,
+          weight: 400,
+          family: 'Inter, sans-serif',
+        },
+        callback: function(value: any) {
+          return new Intl.NumberFormat().format(value);
         },
       },
       border: {
         color: '#334155',
+        width: 1,
       },
+    },
+  },
+  elements: {
+    point: {
+      radius: 4,
+      hoverRadius: 8,
+      borderWidth: 2,
+      hoverBorderWidth: 3,
+    },
+    line: {
+      borderWidth: 3,
+      tension: 0.4,
+    },
+    bar: {
+      borderRadius: 4,
+      borderWidth: 0,
     },
   },
 };

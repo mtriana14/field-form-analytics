@@ -1,62 +1,66 @@
-import { ReactNode } from "react";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/card";
 
 interface StatsCardProps {
   title: string;
   value: string | number;
-  subtitle?: string;
+  change?: string;
+  changeType?: 'positive' | 'negative' | 'neutral';
   icon: LucideIcon;
-  trend?: {
-    value: number;
-    label: string;
-    isPositive: boolean;
-  };
+  description?: string;
   className?: string;
 }
 
 export function StatsCard({ 
   title, 
   value, 
-  subtitle, 
+  change,
+  changeType = 'neutral',
   icon: Icon, 
-  trend, 
+  description, 
   className 
 }: StatsCardProps) {
+  const getChangeColor = () => {
+    switch (changeType) {
+      case 'positive':
+        return 'text-success bg-success/10';
+      case 'negative':
+        return 'text-destructive bg-destructive/10';
+      default:
+        return 'text-muted-foreground bg-muted/20';
+    }
+  };
+
   return (
-    <div className={cn(
-      "bg-gradient-card rounded-lg border border-border p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1",
+    <Card className={cn(
+      "bg-gradient-to-br from-card to-card/80 border-border/50 hover:shadow-lg transition-all duration-300 p-6",
       className
     )}>
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div className="flex-1">
           <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{title}</p>
-          <p className="text-3xl font-bold text-foreground mt-2">{value}</p>
-          {subtitle && (
-            <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
-          )}
-          {trend && (
-            <div className="flex items-center mt-3">
+          <p className="text-3xl font-bold text-foreground mt-2 mb-1">{value}</p>
+          {change && (
+            <div className="flex items-center mt-2">
               <span className={cn(
-                "text-sm font-semibold px-2 py-1 rounded-full",
-                trend.isPositive 
-                  ? "text-success bg-success/10" 
-                  : "text-destructive bg-destructive/10"
+                "text-xs font-semibold px-2 py-1 rounded-full",
+                getChangeColor()
               )}>
-                {trend.isPositive ? "↗" : "↘"} {trend.isPositive ? "+" : ""}{trend.value}%
-              </span>
-              <span className="text-xs text-muted-foreground ml-2">
-                {trend.label}
+                {change}
               </span>
             </div>
           )}
+          {description && (
+            <p className="text-xs text-muted-foreground mt-2">{description}</p>
+          )}
         </div>
         <div className="flex-shrink-0">
-          <div className="w-14 h-14 bg-gradient-primary rounded-lg flex items-center justify-center shadow-md">
-            <Icon className="w-7 h-7 text-primary-foreground" />
+          <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+            <Icon className="w-6 h-6 text-primary" />
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

@@ -115,38 +115,31 @@ export default function StoreDetail() {
             title="Cases This Week"
             value={storeData.casesThisWeek}
             icon={Package}
-            subtitle={`${storeData.casesLastWeek} last week`}
-            trend={{
-              value: Math.abs(trendValue),
-              label: "vs last week",
-              isPositive: isPositiveTrend
-            }}
+            change={`${isPositiveTrend ? '+' : ''}${trendValue.toFixed(1)}% vs last week`}
+            changeType={isPositiveTrend ? 'positive' : 'negative'}
+            description={`${storeData.casesLastWeek} last week`}
           />
           <StatsCard
             title="Active Employees"
             value={storeData.employeeCount}
             icon={Users}
-            subtitle="On current shift"
+            description="On current shift"
           />
           <StatsCard
             title="Avg Time per Case"
             value={`${storeData.avgTimePerCase} min`}
             icon={Clock}
-            trend={{
-              value: 5.2,
-              label: "improvement",
-              isPositive: true
-            }}
+            change="-5.2% improvement"
+            changeType="positive"
+            description="Per case processed"
           />
           <StatsCard
             title="Store Efficiency"
             value={`${storeData.efficiency}%`}
             icon={Target}
-            trend={{
-              value: 1.8,
-              label: "vs last month",
-              isPositive: true
-            }}
+            change="+1.8% vs last month"
+            changeType="positive"
+            description="Overall performance"
           />
         </div>
 
