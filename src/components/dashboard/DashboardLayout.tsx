@@ -29,18 +29,18 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-dashboard-bg">
+    <div className="min-h-screen bg-background">
       <div className="flex">
         {/* Sidebar */}
-        <div className="w-64 bg-sidebar text-sidebar-foreground">
+        <div className="w-64 bg-gradient-to-b from-sidebar to-sidebar/95 text-sidebar-foreground shadow-xl">
           <div className="flex h-full flex-col">
             {/* Logo */}
-            <div className="flex h-16 items-center px-6 border-b border-sidebar-border">
-              <h1 className="text-xl font-bold">DeliveryPro</h1>
+            <div className="flex h-16 items-center px-6 border-b border-sidebar-border/20">
+              <h1 className="text-xl font-bold text-sidebar-foreground">DeliveryPro</h1>
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 space-y-1 px-3 py-4">
+            <nav className="flex-1 space-y-2 px-3 py-6">
               {navigation.map((item) => {
                 const isActive = location.pathname === item.href;
                 return (
@@ -48,10 +48,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                     key={item.name}
                     to={item.href}
                     className={cn(
-                      "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                      "group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200",
                       isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground/80 hover:bg-sidebar-accent/80 hover:text-sidebar-accent-foreground"
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                        : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-md"
                     )}
                   >
                     <item.icon className="mr-3 h-5 w-5" />
@@ -62,7 +62,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </nav>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t border-sidebar-border">
+            <div className="px-6 py-4 border-t border-sidebar-border/20">
               <p className="text-xs text-sidebar-foreground/60">
                 © 2025 DeliveryPro Analytics
               </p>
@@ -72,15 +72,24 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
         {/* Main Content */}
         <div className="flex-1">
-          {/* Header */}
-          <header className="bg-dashboard-panel border-b border-border px-6 py-4">
-            <h2 className="text-2xl font-semibold text-dashboard-header">
-              Delivery Analytics Dashboard
-            </h2>
+          {/* Sticky Header with Blur Backdrop */}
+          <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-md border-b border-border px-6 py-4 shadow-sm">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-foreground">
+                Delivery Analytics Dashboard
+              </h2>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                  <span className="text-sm text-muted-foreground">Live Data</span>
+                </div>
+                <span className="text-sm text-muted-foreground">Welcome back, Admin</span>
+              </div>
+            </div>
           </header>
 
           {/* Page Content */}
-          <main className="p-6">
+          <main className="p-6 space-y-6">
             {children}
           </main>
         </div>
