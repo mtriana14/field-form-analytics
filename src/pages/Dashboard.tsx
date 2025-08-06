@@ -99,19 +99,19 @@ export default function Dashboard() {
           </ChartContainer>
         </div>
 
-        {/* Store Performance Cards */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-xl font-semibold text-foreground">Store Performance</h3>
-              <p className="text-muted-foreground">Individual store metrics and trends</p>
+        {/* Store Performance Section */}
+        <div className="space-y-8 mt-12">
+          <div className="flex items-center justify-between pb-4 border-b border-border/50">
+            <div className="space-y-1">
+              <h3 className="text-2xl font-bold text-foreground">Store Performance</h3>
+              <p className="text-muted-foreground">Individual store metrics and operational insights</p>
             </div>
             <Link
-              to="/analytics"
-              className="flex items-center text-sm text-primary hover:text-primary-dark transition-colors"
+              to="/stores"
+              className="flex items-center gap-2 px-4 py-2 text-sm text-primary hover:text-primary-dark hover:bg-primary/5 rounded-lg transition-all duration-200"
             >
-              View Analytics
-              <ExternalLink className="w-4 h-4 ml-1" />
+              View All Stores
+              <ExternalLink className="w-4 h-4" />
             </Link>
           </div>
           
@@ -140,47 +140,49 @@ export default function Dashboard() {
         </div>
 
         {/* Employee Activity Summary */}
-        <ChartContainer
-          title="Top Employee Activity"
-          subtitle="This week's performance leaders"
-          actions={
-            <Link
-              to="/employees"
-              className="flex items-center text-sm text-primary hover:text-primary-dark transition-colors"
-            >
-              View All Employees
-              <ExternalLink className="w-4 h-4 ml-1" />
-            </Link>
-          }
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {mockEmployeeActivity.slice(0, 6).map((employee, index) => (
-              <div key={index} className="p-4 border border-border rounded-lg">
-                <h4 className="font-medium text-card-foreground">{employee.name}</h4>
-                <p className="text-sm text-muted-foreground mb-2">{employee.store}</p>
-                <div className="space-y-1 text-sm">
-                  <div className="flex justify-between">
-                    <span>Hours:</span>
-                    <span className="font-medium">{employee.hoursWorked}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Cases:</span>
-                    <span className="font-medium">{employee.casesCompleted}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Efficiency:</span>
-                    <span className={`font-medium ${
-                      employee.efficiency >= 95 ? "text-success" :
-                      employee.efficiency >= 90 ? "text-warning" : "text-destructive"
-                    }`}>
-                      {employee.efficiency}%
-                    </span>
+        <div className="mt-12">
+          <ChartContainer
+            title="Top Employee Activity"
+            subtitle="This week's performance leaders"
+            actions={
+              <Link
+                to="/employees"
+                className="flex items-center gap-2 px-4 py-2 text-sm text-primary hover:text-primary-dark hover:bg-primary/5 rounded-lg transition-all duration-200"
+              >
+                View All Employees
+                <ExternalLink className="w-4 h-4" />
+              </Link>
+            }
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {mockEmployeeActivity.slice(0, 6).map((employee, index) => (
+                <div key={index} className="p-5 bg-gradient-to-br from-card to-card/80 border border-border rounded-lg hover:shadow-md transition-all duration-200">
+                  <h4 className="font-semibold text-foreground">{employee.name}</h4>
+                  <p className="text-sm text-muted-foreground mb-3">{employee.store}</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Hours:</span>
+                      <span className="font-semibold text-foreground">{employee.hoursWorked}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Cases:</span>
+                      <span className="font-semibold text-foreground">{employee.casesCompleted}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Efficiency:</span>
+                      <span className={`font-semibold ${
+                        employee.efficiency >= 95 ? "text-success" :
+                        employee.efficiency >= 90 ? "text-info" : "text-warning"
+                      }`}>
+                        {employee.efficiency}%
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </ChartContainer>
+              ))}
+            </div>
+          </ChartContainer>
+        </div>
       </div>
     </DashboardLayout>
   );

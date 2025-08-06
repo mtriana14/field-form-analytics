@@ -32,19 +32,39 @@ export function StatsCard({
     }
   };
 
+  const getIconBackground = () => {
+    // Use different gradient backgrounds based on the icon type
+    if (title.toLowerCase().includes('store')) return 'bg-gradient-to-br from-blue-500/10 to-blue-600/20';
+    if (title.toLowerCase().includes('employee')) return 'bg-gradient-to-br from-purple-500/10 to-purple-600/20';
+    if (title.toLowerCase().includes('case')) return 'bg-gradient-to-br from-orange-500/10 to-orange-600/20';
+    if (title.toLowerCase().includes('efficiency')) return 'bg-gradient-to-br from-green-500/10 to-green-600/20';
+    return 'bg-gradient-to-br from-primary/10 to-primary/20';
+  };
+
+  const getIconColor = () => {
+    if (title.toLowerCase().includes('store')) return 'text-blue-600';
+    if (title.toLowerCase().includes('employee')) return 'text-purple-600';
+    if (title.toLowerCase().includes('case')) return 'text-orange-600';
+    if (title.toLowerCase().includes('efficiency')) return 'text-green-600';
+    return 'text-primary';
+  };
+
   return (
     <Card className={cn(
-      "bg-gradient-to-br from-card to-card/80 border-border/50 hover:shadow-lg transition-all duration-300 p-6",
+      "group relative overflow-hidden bg-gradient-to-br from-card via-card to-card/95 border-border/50 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 p-6",
       className
     )}>
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{title}</p>
-          <p className="text-3xl font-bold text-foreground mt-2 mb-1">{value}</p>
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
+      <div className="relative flex items-start justify-between">
+        <div className="flex-1 space-y-1">
+          <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{title}</p>
+          <p className="text-3xl font-bold text-foreground mt-2 mb-1 group-hover:scale-105 transition-transform duration-200">{value}</p>
           {change && (
             <div className="flex items-center mt-2">
               <span className={cn(
-                "text-xs font-semibold px-2 py-1 rounded-full",
+                "text-xs font-semibold px-3 py-1.5 rounded-full border",
                 getChangeColor()
               )}>
                 {change}
@@ -52,12 +72,15 @@ export function StatsCard({
             </div>
           )}
           {description && (
-            <p className="text-xs text-muted-foreground mt-2">{description}</p>
+            <p className="text-xs text-muted-foreground mt-2 font-medium">{description}</p>
           )}
         </div>
         <div className="flex-shrink-0">
-          <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-            <Icon className="w-6 h-6 text-primary" />
+          <div className={cn(
+            "w-14 h-14 rounded-xl flex items-center justify-center shadow-lg border border-white/10 group-hover:scale-110 transition-all duration-300",
+            getIconBackground()
+          )}>
+            <Icon className={cn("w-7 h-7", getIconColor())} />
           </div>
         </div>
       </div>
