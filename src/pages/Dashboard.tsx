@@ -5,15 +5,13 @@ import {
   Users, 
   Package, 
   TrendingUp,
-  Clock,
   Target,
-  ArrowUpRight,
-  ArrowDownRight,
   ExternalLink,
   Upload
 } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { StatsCard } from "@/components/dashboard/StatsCard";
+import { StoreCard } from "@/components/dashboard/StoreCard";
 import { ChartContainer } from "@/components/dashboard/ChartContainer";
 import { Button } from "@/components/ui/button";
 import { chartOptions } from "@/lib/chartConfig";
@@ -101,100 +99,45 @@ export default function Dashboard() {
           </ChartContainer>
         </div>
 
-        {/* Store Performance Table */}
-        <ChartContainer
-          title="Store Performance Overview"
-          subtitle="Detailed metrics for each location"
-          actions={
+        {/* Store Performance Cards */}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-xl font-semibold text-foreground">Store Performance</h3>
+              <p className="text-muted-foreground">Individual store metrics and trends</p>
+            </div>
             <Link
-              to="/stores"
+              to="/analytics"
               className="flex items-center text-sm text-primary hover:text-primary-dark transition-colors"
             >
-              View All Stores
+              View Analytics
               <ExternalLink className="w-4 h-4 ml-1" />
             </Link>
-          }
-        >
-          <div className="overflow-x-auto">
-            <table className="w-full table-auto">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Store</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Cases</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Trend</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Employees</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Avg Time</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Efficiency</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {mockStoreData.map((store) => (
-                  <tr key={store.id} className="border-b border-border hover:bg-muted/50">
-                    <td className="py-4 px-4">
-                      <div>
-                        <p className="font-medium text-card-foreground">{store.name}</p>
-                        <p className="text-sm text-muted-foreground">{store.location}</p>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div className="flex items-center">
-                        <span className="font-medium">{store.casesThisWeek}</span>
-                        <span className="text-sm text-muted-foreground ml-1">
-                          ({store.casesLastWeek} last week)
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div className="flex items-center">
-                        {store.trend === "up" ? (
-                          <ArrowUpRight className="w-4 h-4 text-success mr-1" />
-                        ) : (
-                          <ArrowDownRight className="w-4 h-4 text-destructive mr-1" />
-                        )}
-                        <span className={`text-sm font-medium ${
-                          store.trend === "up" ? "text-success" : "text-destructive"
-                        }`}>
-                          {store.trend === "up" ? "+" : "-"}
-                          {Math.abs(((store.casesThisWeek - store.casesLastWeek) / store.casesLastWeek * 100)).toFixed(1)}%
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div className="flex items-center">
-                        <Users className="w-4 h-4 text-muted-foreground mr-1" />
-                        {store.employeeCount}
-                      </div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div className="flex items-center">
-                        <Clock className="w-4 h-4 text-muted-foreground mr-1" />
-                        {store.avgTimePerCase} min
-                      </div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div className="flex items-center">
-                        <div className={`w-2 h-2 rounded-full mr-2 ${
-                          store.efficiency >= 95 ? "bg-success" :
-                          store.efficiency >= 90 ? "bg-warning" : "bg-destructive"
-                        }`} />
-                        {store.efficiency}%
-                      </div>
-                    </td>
-                    <td className="py-4 px-4">
-                      <Link
-                        to={`/store/${store.id}`}
-                        className="text-primary hover:text-primary-dark text-sm font-medium transition-colors"
-                      >
-                        View Details
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
-        </ChartContainer>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {mockStoreData.map((store) => {
+              const trendPercentage = Number(((store.casesThisWeek - store.casesLastWeek) / store.casesLastWeek * 100).toFixed(1));
+              const status = store.efficiency >= 95 ? 'excellent' : 
+                           store.efficiency >= 85 ? 'good' : 
+                           store.efficiency >= 75 ? 'needs-attention' : 'critical';
+              
+              return (
+                <StoreCard
+                  key={store.id}
+                  id={store.id.toString()}
+                  name={store.name}
+                  cases={store.casesThisWeek}
+                  trend={trendPercentage}
+                  employees={store.employeeCount}
+                  avgTime={`${store.avgTimePerCase}m`}
+                  efficiency={store.efficiency}
+                  status={status as 'excellent' | 'good' | 'needs-attention' | 'critical'}
+                />
+              );
+            })}
+          </div>
+        </div>
 
         {/* Employee Activity Summary */}
         <ChartContainer
